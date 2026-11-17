@@ -13,20 +13,12 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 
 </form>
 <h2> emails pour {{ username }}</h2>
-{% for x in repos %}
+{% for x in emails %}
 
 <li>
-{% if (x["size"] | int) < 50 %}
-<b>
-{% endif%}
-<a target="_blank" href="/crawler?username={{ username }}&repo={{ x["name"] }}&pageno={{ pageno }}">{{ x["name"] }} (<i>{{ x["language"] }}</i>, size: <i>{{ x["size"] }}</i>)</a>
 
-<br><span style="font-size:14px;">{{ x["description"] }} 
-</span>
-{% if (x["size"] | int) < 50 %}
-</b>
-{% endif%}
-<a target="_blank" href="/crawlerpic?username={{ username }}&repo={{ x["name"] }}&pageno={{ pageno }}">ajouter une image à {{ x["name"] }}</a>
+<a target="_blank" href="/email?from={{ username }}&subject={{ x["name"] }}">{{ x["from"] }}(subject : <i>{{ x["subject"] }}</i>, date : <i>{{ x["date"] }}</i>)</a>
+
 </li>
 
 {% endfor%}

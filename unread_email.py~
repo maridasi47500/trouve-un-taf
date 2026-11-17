@@ -39,7 +39,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     try:
-        lastemail = int(request.args.get("nblastemail"))
+        lastemail = int(request.args.get("nbemail"))
         print("option 1", lastemail)
     except:
         lastemail = 10
@@ -69,8 +69,9 @@ def index():
         print(f"Date: {msg['Date']}")
         body = get_email_body(msg)  
         #print("Email Body:\n", body)  
-        emails.append({"body": body, "from": msg["From"], "subject": subject, "date": msg["Date"]})
-    return render_template("index.html", emails=emails, username=username,pageno=pageno)
+        if msg["From"] in ["donotreply@jobalert.indeed.com"]:
+            emails.append({"body": body, "from": msg["From"], "subject": subject, "date": msg["Date"]})
+    return render_template("index.html", emails=emails, username=username,nbemails=lastemail)
 
         
     
