@@ -13,7 +13,7 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 
 </form>
 <h2> emails pour {{ username }}</h2>
-{% for x in repos %}
+{% for x in emails %}
 
 <li>
 

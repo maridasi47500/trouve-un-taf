@@ -58,6 +58,8 @@ def index():
     ids = ids[0].split()[-(lastemail):] if ids[0] else []
     ids.reverse()
     emails=[] 
+    joboffers=[]
+    sites=["indeed", "linkedin", "welcometothejungle", "hellowork", "apec", "cadremploi", "meteojob", "jobleads", "jobijoba", "jooble"] 
     for eid in ids:
         status, data = mail.fetch(eid, "(RFC822)")
         msg = email.message_from_bytes(data[0][1])
@@ -69,9 +71,21 @@ def index():
         print(f"Date: {msg['Date']}")
         body = get_email_body(msg)  
         #print("Email Body:\n", body)  
-        if msg["From"] in ["donotreply@jobalert.indeed.com"]:
-            emails.append({"body": body, "from": msg["From"], "subject": subject, "date": msg["Date"]})
-    return render_template("index.html", emails=emails, username=username,nbemails=lastemail)
+        pattern = r'[A-Za-z0-9]+@[\w]+\.[\w]+'
+        try:
+            resultemail = (re.findall(pattern, msg['From']))[0]
+        except:
+            resultemail="haha@email.com"
+
+        if resultemail in ["donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org"]:
+            myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
+            for w in sites:
+                if w in msg["From"]:
+                    myhash["myjobofferurl"]=w
+            emails.append(myhash)
+    for x in emails:
+        print(x["subject"])
+    return render_template("index.html", joboffers=joboffers, emails=emails, username=username,nbemails=lastemail)
 
         
     
