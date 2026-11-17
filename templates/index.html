@@ -16,7 +16,7 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 <input type="submit" value="envoyer"/>
 
 </form>
-<h2> emails pour {{ username }}</h2>
+<h2> emails pour <span style="display:none;" id="myemailstr">{{ username }}</span> <span id="adressemasque">(******@******.*** adresse masquée )<a href="" onclick="adressemasque.style.display='none';myemailstr.style.display='inline-block';return false;" onclick="return false;">montrer l'adresse</a></span></h2>
 {% for x in emails %}
 
 <li>
