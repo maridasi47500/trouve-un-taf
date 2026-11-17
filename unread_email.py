@@ -71,11 +71,12 @@ def index():
         print(f"Date: {msg['Date']}")
         body = get_email_body(msg)  
         #print("Email Body:\n", body)  
-        pattern = r'[A-Za-z0-9]+@[\w]+\.[\w]+'
+        pattern = r'([A-Za-z0-9-.]+@([\w]+\.)?[\w]+\.[\w]+)'
         try:
-            resultemail = (re.findall(pattern, msg['From']))[0]
+            resultemail = re.findall(pattern, msg['From'])[0][0]
         except:
             resultemail="haha@email.com"
+        print("result email", resultemail)
 
         if resultemail in ["donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org"]:
             myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
