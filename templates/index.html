@@ -22,6 +22,7 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 <li>
 
 <a target="_blank" href="/email?from={{ username }}&subject={{ x["name"] }}">{{ x["from"] }}(subject : <i>{{ x["subject"] }}</i>, date : <i>{{ x["date"] }}</i>)</a>
+{{x["body"] | safe}}
 
 </li>
 
