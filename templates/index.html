@@ -42,10 +42,10 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 	      <h4 class="card-title">{{x["title"]}}</h4>
 	      <p class="card-text">{{x["content"]}}</p>
 	      <p class="card-text"><b>Url de l'Offre</b> : {{x["jobofferurl"]}}</p>
-	      <p class="card-text"><b>Lieu :</b> {{x["city"]}}</p>
+	      <p class="card-text maville"><b>Lieu :</b> <span style="display:none;" id="mycitystr{{loop.index0}}">{{ x["city"] }}</span> <span id="citymasque{{loop.index0}}">(ville masquée )<a href="" onclick="citymasque{{loop.index0}}.style.display='none';mycitystr{{loop.index0}}.style.display='inline-block';return false;">montrer la ville</a></span></p>
 	      <p class="card-text"><b>Contrat :</b> {{x["contrat"]}}</p>
 	      <p class="card-text"><b>Salaire :</b> {{x["salaire"]}}</p>
-	      <p class="card-text"><b>Entreprise :</b> {{x["company"]}}</p>
+	      <p class="card-text monentreprise"><b>Entreprise :</b> <span style="display:none;" id="mycompanystr{{loop.index0}}">{{ x["company"] }}</span> <span id="companymasque{{loop.index0}}">(entreprise masquée )<a href="" onclick="companymasque{{loop.index0}}.style.display='none';mycompanystr{{loop.index0}}.style.display='inline-block';return false;">montrer l'entreprise</a></span></p>
       </div>
     </div>
   </div>
