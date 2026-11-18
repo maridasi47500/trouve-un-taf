@@ -4,6 +4,7 @@ import os
 import subprocess
 import string
 import random
+from mylibrary import ScanJobOffers
 from flask import Flask, render_template, request, session
 from werkzeug.utils import secure_filename
 import json
@@ -59,6 +60,7 @@ def index():
     ids.reverse()
     emails=[] 
     joboffers=[]
+    quiarepondu=[]
     sites=["indeed", "linkedin", "welcometothejungle", "hellowork", "apec", "cadremploi", "meteojob", "jobleads", "jobijoba", "jooble"] 
     for eid in ids:
         status, data = mail.fetch(eid, "(RFC822)")
@@ -70,7 +72,7 @@ def index():
         print(f"Subject: {subject}")
         print(f"Date: {msg['Date']}")
         body = get_email_body(msg)  
-        print("Email Body:\n", body)  
+        #print("Email Body:\n", body)  
         pattern = r'([A-Za-z0-9-.]+@([\w]+\.)?[\w]+\.[\w]+)'
         try:
             resultemail = re.findall(pattern, msg['From'])[0][0]
@@ -78,14 +80,26 @@ def index():
             resultemail="haha@email.com"
         print("result email", resultemail)
 
-        if resultemail in ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org"]:
+        if resultemail in ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com"]:
             myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
             for w in sites:
                 if w in msg["From"]:
                     myhash["myjobofferurl"]=w
             emails.append(myhash)
+            if resultemail == "contact@jobijoba.com":
+                for zz in ScanJobOffers().scanjobijoba(myhash):
+                    joboffers.append(zz)
+            elif resultemail == "ne-pas-repondre@meteojob.com":
+                for zz in ScanJobOffers().scanmeteojob(myhash):
+                    joboffers.append(zz)
+            elif resultemail == "subscribe@fr.jooble.org":
+                for zz in ScanJobOffers().scanjooble(myhash):
+                    joboffers.append(zz)
+    
+
     for x in emails:
         print(x["subject"])
+    print(joboffers)
     return render_template("index.html", joboffers=joboffers, emails=emails, username=username,nbemails=lastemail)
 
         

@@ -6,6 +6,21 @@
 tu veux regarder toutes les offres d'emploi qui viennent de tes alertes sur :
 indeed, linkedin, welcome to the jungle, hello work, apec, cadremploi, meteojob, jobleads, jobijoba, jooble
 </p>
+<p>
+À faire une fois, toi-même
+Crée tes alertes sur les sites d'emploi.
+Sur chaque site, enregistre une recherche avec tes critères et active l'alerte par e-mail. Les offres arrivent dans ta boîte mail, comme d'habitude.
+
+Indeed
+LinkedIn
+Welcome to the Jungle
+HelloWork
+APEC
+Cadremploi
+Meteojob
+JobLeads
+Un site sans alerte, ce sont des offres que tu ne verras pas dans l'app.
+</p>
 <form>
 <div>
 <label>
@@ -17,15 +32,26 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 
 </form>
 <h2> emails pour <span style="display:none;" id="myemailstr">{{ username }}</span> <span id="adressemasque">(******@******.*** adresse masquée )<a href="" onclick="adressemasque.style.display='none';myemailstr.style.display='inline-block';return false;" onclick="return false;">montrer l'adresse</a></span></h2>
-{% for x in emails %}
+<div class="row row-cols-2 md:row-cols-2 g-4">
 
-<li>
+{% for x in joboffers %}
 
-<a target="_blank" href="/email?from={{ username }}&subject={{ x["name"] }}">{{ x["from"] }}(subject : <i>{{ x["subject"] }}</i>, date : <i>{{ x["date"] }}</i>)</a>
-{{x["body"]}}
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+	      <h4 class="card-title">{{x["title"]}}</h4>
+	      <p class="card-text">{{x["content"]}}</p>
+	      <p class="card-text"><b>Url de l'Offre</b> : {{x["jobofferurl"]}}</p>
+	      <p class="card-text"><b>Lieu :</b> {{x["city"]}}</p>
+	      <p class="card-text"><b>Contrat :</b> {{x["contrat"]}}</p>
+	      <p class="card-text"><b>Salaire :</b> {{x["salaire"]}}</p>
+	      <p class="card-text"><b>Entreprise :</b> {{x["company"]}}</p>
+      </div>
+    </div>
+  </div>
 
-</li>
 
 {% endfor%}
+</div>
 
   {% endblock %}

@@ -1,129 +1,249 @@
-import imaplib, email
-import requests
-import os
-import subprocess
+#import imaplib, email
+#import requests
+#import os
+#import subprocess
 from bs4 import BeautifulSoup
 
-import string
-import random
-from flask import Flask, render_template, request, session
-from werkzeug.utils import secure_filename
+#import string
+#import random
+#from flask import Flask, render_template, request, session
+#from werkzeug.utils import secure_filename
 import json
 import re
 
-from email.header import decode_header
+#from email.header import decode_header
 import os
-# importing necessary functions from dotenv library
-from dotenv import load_dotenv, dotenv_values 
-# loading variables from .env file
-load_dotenv() 
-def get_email_body(message):  
-    body = []  
-    if message.is_multipart():  
-        # Iterate over all parts  
-        for part in message.walk():  
-            content_type = part.get_content_type()  
-            # Skip attachments and non-text parts  
-            if content_type in ('text/plain', 'text/html'):  
-                # Get the payload (body content)  
-                payload = part.get_payload(decode=True)  # decode=True handles base64/quoted-printable  
-                charset = part.get_content_charset() or 'utf-8'  # Default to utf-8 if charset missing  
-                body.append(payload.decode(charset, errors='replace'))  # 'replace' handles encoding errors  
-    else:  
-        # Non-multipart: payload is the body  
-        payload = message.get_payload(decode=True)  
-        charset = message.get_content_charset() or 'utf-8'  
-        body.append(payload.decode(charset, errors='replace'))  
-    return '\n'.join(body)  
+#from dotenv import load_dotenv, dotenv_values 
+#load_dotenv() 
+#def get_email_body(message):  
+#    body = []  
+#    if message.is_multipart():  
+#        # Iterate over all parts  
+#        for part in message.walk():  
+#            content_type = part.get_content_type()  
+#            # Skip attachments and non-text parts  
+#            if content_type in ('text/plain', 'text/html'):  
+#                # Get the payload (body content)  
+#                payload = part.get_payload(decode=True)  # decode=True handles base64/quoted-printable  
+#                charset = part.get_content_charset() or 'utf-8'  # Default to utf-8 if charset missing  
+#                body.append(payload.decode(charset, errors='replace'))  # 'replace' handles encoding errors  
+#    else:  
+#        # Non-multipart: payload is the body  
+#        payload = message.get_payload(decode=True)  
+#        charset = message.get_content_charset() or 'utf-8'  
+#        body.append(payload.decode(charset, errors='replace'))  
+#    return '\n'.join(body)  
 
-def scanjobijoba(myhash):
+class ScanJobOffers:
+    def __init__(self):
+        print("Welcome to my job search")
+    def scanjobijoba(self, myhash):
+    
+        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobijoba","salaire":""}
+        myscans=[]
+        soup = BeautifulSoup(myhash["body"], "html.parser")
+        secure_links = soup.select('a[href*="emails.jobijoba.com"]')
+        for x in secure_links:
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobijoba", "salaire":""}
+            try:
+                mylink=BeautifulSoup(str(x), "html.parser")
+                title=mylink.select("strong span")
+                info=mylink.select("p span")
+                print("mytitle", (title))
+                for w in title:
+                    print("title", w.get("title"))
+                    print("company", info[1].get_text())
+                    print("city", info[2].get_text())
+                    #print("contrat", info[3].get_text())
+                    #print("hybrid", info[4].get_text())
+                    #print("description", info[5].get_text())
+                    myscan["title"]= w.get("title")
+                    myscan["company"]= info[1].get_text()
+                    myscan["city"]= info[2].get_text()
+                    if len(info) > 4:
+                        for aa in info[3:]:
+                            text=aa.get_text().lower()
+                            numbers = re.findall(r'-?\d*\.?\d+', text)
+                            if "€" in text and len(numbers) > 0:
+                                myscan["salaire"]= text
+                            elif "cdd" in text or "cdi" in text or "indépendant" in text or "stage" in text or "interim" in text or "intérim" in text:
+                                myscan["contrat"]= text
+                            elif "télétravail" in text or "teletravail" in text or "hybrid" in text or "presentiel" in text or "présentiel" in text:
+                                myscan["hybrid"]= text
+                    content= info[-1].get_text().strip()
+                    if content.strip().lower() == "sponsorisé":
+                        content= info[-2].get_text().strip()
 
-    myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobijoba"}
-    myscans=[]
-    soup = BeautifulSoup(myhash["body"], "html.parser")
-    secure_links = soup.select('a[href*="emails.jobijoba.com"]')
-    for x in secure_links:
-        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobijoba"}
+                    myscan["content"]= content
+                    myscans.append(myscan)
+            except Exception as e:
+                print("error", e)
+                 
+        
+        
+        print(myscans)
+        return myscans
+    
+    def scanmeteojob(self, myhash):
+    
+        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "meteojob","salaire":""}
+        myscans=[]
+        soup = BeautifulSoup(myhash["body"], "html.parser")
+        secure_links = soup.select('a[href*="meteojob.com/jobs"]')
+        for x in secure_links:
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "meteojob","salaire":""}
+            try:
+                print(str(x), "html.parser")
+                mylink=BeautifulSoup(str(x), "html.parser")
+                title=mylink.select("span strong")
+                info=mylink.select("span")
+                print("mytitle", (title))
+                z=0
+                for w in title:
+                    print("title ", w.get_text())
+                    #print("title INFO ", info)
+                    #allinfo= info[1].get_text().split(" • ")
+                    print("company", info[1].get_text().strip())
+    
+                    print("city", info[2].get_text())
+                    print("contrat", info[3].get_text())
+    
+                    myscan["title"]= w.get_text().strip()
+                    myscan["company"]= info[2].get_text().strip()
+                    myscan["city"]= info[3].get_text().strip()
+                    myscan["contrat"]= info[4].get_text().strip()
+    
+    
+                    myscans.append(myscan)
+                    z+=1
+            except:
+                print("error")
+        
+        
+        print(myscans)
+        return myscans
+    
+    def convertir_en_text(self, val):
+        """Convertit une valeur en entier, avec gestion des erreurs."""
         try:
-            #print("link", x.prettify())
-            #print("link", x.get_text())
-            mylink=BeautifulSoup(str(x), "html.parser")
-            title=mylink.select("strong span")
-            info=mylink.select("p span")
-            print("mytitle", (title))
-            z=0
-            for w in title:
-                print("title", w.get("title"))
-                print("company", info[1].get_text())
-                print("city", info[2].get_text())
-                print("contrat", info[3].get_text())
-                print("hybrid", info[4].get_text())
-                myscan["title"]= w.get("title")
-                myscan["company"]= info[1].get_text()
-                myscan["city"]= info[2].get_text()
-                myscan["contrat"]= info[3].get_text()
-                myscan["hybrid"]= info[4].get_text()
+            print(val)
+            return val.get_text()
+        except ValueError:
+            return None  # Retourne None si la conversion échoue
+    
+    
+    def scanjooble(self, myhash):
+    
+        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jooble", "salaire":""}
+        myscans=[]
+        soup = BeautifulSoup(myhash["body"], "html.parser")
+        secure_links = soup.select('a[href*="jooble.org/redir/jdp"]')
+        print("===========JOOBLEEE==============")
+        for x in secure_links:
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jooble","salaire":""}
+            try:
+    
+                #print(str(x), "html.parser")
+                mylink=BeautifulSoup(str(x), "html.parser")
+                title=mylink.select("h2 strong")
+                company=mylink.select("td p strong")
+                info=mylink.select("td p span")
+                tags=mylink.select("td p .tag")
+                print("mytitle", (title))
+                z=0
+                print("title JOOBLE", title[0].get_text())
+                #print("title INFO ", info)
+                #allinfo= info[1].get_text().split(" • ")
+                try:
+                    salaire= title[1].get_text().strip()
+                    print("salaire", salaire)
+                except:
+                    salaire=""
+                    print("salaire", "")
+    
+                print("company", company[0].get_text())
+                print("city", info[1].get_text())
+                mytag=list(tags)
+                contrat=""
+                for ww in mytag:
+                    contrat+=" "+ww.get_text().strip() if "Suggéré" not in ww.get_text() else ""
+                print("contrat", contrat)
+    
+                myscan["title"]= title[0].get_text().strip()
+                myscan["company"]= company[0].get_text().strip()
+                myscan["city"]= info[1].get_text().strip()
+                myscan["contrat"]= contrat
+                myscan["salaire"]= salaire
+    
+    
                 myscans.append(myscan)
-        except:
-            print("error")
+                z+=1
+            except Exception as e:
+                print("error JOOBLE", e)
+        
+        
+        print(myscans)
+        return myscans
+#try:
+#    lastemail = 10
+#    print("option 1", lastemail)
+#except:
+#    lastemail = 10
+#    print("option 2")
+## accessing and printing value
+#print(os.getenv("MY_KEY"))
+#
+#
+#mail = imaplib.IMAP4_SSL("imap.gmail.com")
+#username=os.getenv("MYEMAIL")
+#mail.login(username, os.getenv("MYPASS"))
+#mail.select("inbox")
+#
+##status, ids = mail.search(None, "UNSEEN")
+#status, ids = mail.search(None, "SEEN")
+#ids = ids[0].split()[-(lastemail):] if ids[0] else []
+#ids.reverse()
+#emails=[] 
+#joboffers=[]
+#sites=["indeed", "linkedin", "welcometothejungle", "hellowork", "apec", "cadremploi", "meteojob", "jobleads", "jobijoba", "jooble"] 
+#for eid in ids:
+#    status, data = mail.fetch(eid, "(RFC822)")
+#    msg = email.message_from_bytes(data[0][1])
+#    subject, enc = decode_header(msg["Subject"])[0]
+#    if isinstance(subject, bytes):
+#        subject = subject.decode(enc or "utf-8", errors="replace")
+#    print(f"From: {msg['From']}")
+#    print(f"Subject: {subject}")
+#    print(f"Date: {msg['Date']}")
+#    body = get_email_body(msg)  
+#    #print("Email Body:\n", body)  
+#    pattern = r'([A-Za-z0-9-.]+@([\w]+\.)?[\w]+\.[\w]+)'
+#    try:
+#        resultemail = re.findall(pattern, msg['From'])[0][0]
+#    except:
+#        resultemail="haha@email.com"
+#    print("result email", resultemail)
+#
+#    if resultemail in ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com"]:
+#        myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
+#        for w in sites:
+#            if w in msg["From"]:
+#                myhash["myjobofferurl"]=w
+#        emails.append(myhash)
+#        if resultemail == "contact@jobijoba.com":
+#            for zz in ScanJobOffers().scanjobijoba(myhash):
+#                joboffers.append(zz)
+#        elif resultemail == "ne-pas-repondre@meteojob.com":
+#            for zz in ScanJobOffers().scanmeteojob(myhash):
+#                joboffers.append(zz)
+#        elif resultemail == "subscribe@fr.jooble.org":
+#            for zz in ScanJobOffers().scanjooble(myhash):
+#                joboffers.append(zz)
+#for x in emails:
+#    print(x["subject"])
+#print(joboffers)
+
     
-    
-    print(myscans)
-    return myscan
 
-
-try:
-    lastemail = 4
-    print("option 1", lastemail)
-except:
-    lastemail = 10
-    print("option 2")
-# accessing and printing value
-print(os.getenv("MY_KEY"))
-
-
-mail = imaplib.IMAP4_SSL("imap.gmail.com")
-username=os.getenv("MYEMAIL")
-mail.login(username, os.getenv("MYPASS"))
-mail.select("inbox")
-
-#status, ids = mail.search(None, "UNSEEN")
-status, ids = mail.search(None, "SEEN")
-ids = ids[0].split()[-(lastemail):] if ids[0] else []
-ids.reverse()
-emails=[] 
-joboffers=[]
-sites=["indeed", "linkedin", "welcometothejungle", "hellowork", "apec", "cadremploi", "meteojob", "jobleads", "jobijoba", "jooble"] 
-for eid in ids:
-    status, data = mail.fetch(eid, "(RFC822)")
-    msg = email.message_from_bytes(data[0][1])
-    subject, enc = decode_header(msg["Subject"])[0]
-    if isinstance(subject, bytes):
-        subject = subject.decode(enc or "utf-8", errors="replace")
-    print(f"From: {msg['From']}")
-    print(f"Subject: {subject}")
-    print(f"Date: {msg['Date']}")
-    body = get_email_body(msg)  
-    #print("Email Body:\n", body)  
-    pattern = r'([A-Za-z0-9-.]+@([\w]+\.)?[\w]+\.[\w]+)'
-    try:
-        resultemail = re.findall(pattern, msg['From'])[0][0]
-    except:
-        resultemail="haha@email.com"
-    print("result email", resultemail)
-
-    if resultemail in ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org"]:
-        myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
-        for w in sites:
-            if w in msg["From"]:
-                myhash["myjobofferurl"]=w
-        emails.append(myhash)
-        if resultemail == "contact@jobijoba.com":
-            joboffers.append(scanjobijoba(myhash))
-for x in emails:
-    print(x["subject"])
-
-    
-
-mail.logout()
+#mail.logout()
 
