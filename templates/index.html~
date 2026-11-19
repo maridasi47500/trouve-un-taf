@@ -21,6 +21,11 @@ Meteojob
 JobLeads
 Un site sans alerte, ce sont des offres que tu ne verras pas dans l'app.
 </p>
+<p>
+
+emails pour <span style="display:none;" id="myallstr">{{ username }}</span> <span id="allmasque">(adresse email, description, ville et entreprises masquée )<a href="" onclick="allmasque.style.display='none';$('[id*=myemail], [id*=mycompany], [id*=mycity]').attr('style', 'display:inline-block;');$('[id*=adressemasque], [id*=companymasque], [id*=citymasque]').attr('style', 'display:none;');return false;" onclick="return false;">tout montrer</a></span>
+
+</p>
 <form>
 <div>
 <label>
@@ -42,10 +47,17 @@ combien d'emails veux tu regarder en partant du haut de tes emails des plus réc
 	      <h4 class="card-title">{{x["title"]}}</h4>
 	      <p class="card-text">{{x["content"]}}</p>
 	      <p class="card-text"><b>Url de l'Offre</b> : {{x["jobofferurl"]}}</p>
-	      <p class="card-text maville"><b>Lieu :</b> <span style="display:none;" id="mycitystr">{{ x["city"] }}</span> <span id="citymasque">(ville masquée )<a href="" onclick="citymasque.style.display='none';mycitystr.style.display='inline-block';return false;">montrer la ville</a></span></p>
+	      <p class="card-text maville"><b>Lieu :</b> <span style="display:none;" id="mycitystr{{loop.index0}}">{{ x["city"] }}</span> <span id="citymasque{{loop.index0}}">(ville masquée )<a href="" onclick="citymasque{{loop.index0}}.style.display='none';mycitystr{{loop.index0}}.style.display='inline-block';return false;">montrer la ville</a></span></p>
 	      <p class="card-text"><b>Contrat :</b> {{x["contrat"]}}</p>
 	      <p class="card-text"><b>Salaire :</b> {{x["salaire"]}}</p>
-	      <p class="card-text monentreprise"><b>Entreprise :</b> <span style="display:none;" id="mycompanystr{{loop.index}}">{{ x["company"] }}</span> <span id="companymasque">(entreprise masquée )<a href="" onclick="companymasque.style.display='none';mycompanystr.style.display='inline-block';return false;">montrer l'entreprise</a></span></p>
+	      <p class="card-text monentreprise"><b>Entreprise :</b> <span style="display:none;" id="mycompanystr{{loop.index0}}">{{ x["company"] }}</span> <span id="companymasque{{loop.index0}}">(entreprise masquée )<a href="" onclick="companymasque{{loop.index0}}.style.display='none';mycompanystr{{loop.index0}}.style.display='inline-block';return false;">montrer l'entreprise</a></span></p>
+	      <p class="card-text actions"><form action="/postuler/job">
+		      <input type="hidden" name="city" value="{{x["city"]}}" />
+		      <input type="hidden" name="company" value="{{x["company"]}}" />
+		      <input type="hidden" name="title" value="{{x["title"]}}" />
+		      <input type="hidden" name="content" value="{{x["content"]}}" />
+                 <input type="submit" value="écrire une lettre pour postuler" />
+	      </form></p>
       </div>
     </div>
   </div>

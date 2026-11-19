@@ -1,0 +1,150 @@
+function initMyLetter(){
+       var aa = {"softskills": "mes soft skills (pour la lettre)", "experience":"Mon expérience (stages et emplois pour la lettre)","experienceentreprise":"Mon expérience en entreprise (pour la 2e lettre de motivation et le cv)","missions":"Mes missions (pour la lettre de motivation)","skills":"Compétences (pour la phrase n°4 de la lettre de motivation)","skillilfautdevelopper":"Compétences qu'il faut développer (pour la lettre de motivation apres l'entretien)", "technicalskill":"mes competences techniques pour le cv", "schooling": "mes formations pour le cv", "technologies": "technologies qui te passionnent le plus"};
+       var xx = Object.keys(aa);
+       var i, y, z,a, myskill;
+    if (document.getElementById("checksomeskill") !== null){
+      myskill = madescriptionjob.value.split("\n");
+      var listsoftskills=["mon aptitude à résoudre des problèmes complexes ", "mon aptitude à m'adapter rapidement à de nouveaux environnements", "mon engagement", "ma capacité à apprendre rapidement"];
+
+       for (y=0;y<xx.length;y++){
+          checksomeskill.innerHTML +="<h2>"+aa[xx[y]]+" :</h2>";
+       for (i=0;i<myskill.length;i++){
+        a=i;
+        if (myskill[i].trim() !== "") {
+       checksomeskill.innerHTML+="<label for=\"skillno"+String(i)+"_"+String(y)+"\"><input id=\"skillno"+String(i)+"_"+String(y)+"\" type=\"checkbox\" name=\""+xx[y]+"\" value=\""+myskill[i]+"\"> "+myskill[i]+"</label><br>";
+        }
+
+       }
+       if (xx[y] === "softskills"){
+       for (z=0;z<listsoftskills.length;z++){
+        
+        console.log(z, listsoftskills[z]);
+        console.log(listsoftskills[z]);
+        if (listsoftskills[z].trim() === "") {
+            continue;
+        }
+       checksomeskill.innerHTML+="<label for=\"skillno"+String(z+a)+"_"+String(y)+"\"><input id=\"skillno"+String(z+a)+"_"+String(y)+"\" type=\"checkbox\" name=\""+xx[y]+"\" value=\""+listsoftskills[z]+"\"> "+listsoftskills[z]+"</label><br>";
+       }
+       }
+       }
+    } else if (document.getElementById("checkmyskill") !== null){
+       //alert("hey");
+        myskill = ["* Gestion technique : conception, administration et maintenance du réseau (Administration matériel et logiciel, en environnements physiques et virtuels, multi-sites, Domaine AD 2022).", "assurer une interface efficace avec les utilisateurs", "Assurer les interventions de maintenance préventive des moyens informatiques, d’automation et des systèmes réseaux (logiciel et matériel).", "Assurer les maintenances correctives : diagnostic des dysfonctionnements puis intervention sur les équipements (dépannage, remise en état, réglages).", "Connaissance des concepts de la programmation orientée objets et de langages objets (C#, VBS, Java), des bases de données relationnelle (SGBD Microsoft SQL Server), des environnements Windows et Linux","Connaissance en administration et sécurisation des réseaux (routage, VLAN, filtrage, notions de cybersécurité ).", "répondre aux besoins des utilisateurs en matière de support informatique", "gestion des droits d'accès des utilisateurs","* Gestion de la sécurité informatique : mise en place de chartes, sécurité du réseau (Firewall, proxy, antivirus, ...), sécurité des données (sauvegardes, ...)","Assurer le SAV niveau 1 (support, aide à l'utilisation, conseil technique...)","gestion des salles de réunions (enregistrements, visioconférences, vidéo projection.. e)","assurer des interventions (dépannages imprimantes, PC, réseau)", "De formation technique","HTML","CSS","JS","REACT","Connaissance des logiciels de Supervision (Panorama)","Des notions des environnements Automates Programmables Industriels seraient un plus.","- Des systèmes, des réseaux et de la virtualisation",
+"Des réseaux et des protocoles de routage",
+"Des outils d’administration et de supervision",
+"Des systèmes de stockage centralisé (NAS/SAN)",
+"De l’administration de bases de données",
+"De sécurisation de réseaux (Firewall, Routeur",
+"De l'administration d'un domaine Windows (AD",
+"Connaissances générales des méthodologies de gestion de projet informatique",
+"- Mise en service (besoin d'un câble réseau et d'un PC)",
+"Faire fonctionner un commutateur téléphonique privé",
+"Besoins des utilisateurs des systèmes d'information et de communication",
+" Capacité à concevoir et à faire évoluer l’architecture d’un système d’information.",
+"Gérer un planning de tâches",
+"Haskell",
+"Effectuer des sauvegardes",
+"Gérer un service d'hébergement et de messagerie électronique",
+"Java (programmation informatique)",
+"Erlang",
+"JavaScript",
+"Systèmes d’exploitation : Linux (RedHat, CentOS…) et Windows Server (2016+).",
+"Authentification et gestion des accès : Active Directory, LDAP.",
+"Automatisation : Ansible",
+"DevOps : Jenkins, GitLab",
+"Virtualisation : VMware, KVM, Nutanix",
+"Stockage et sauvegarde : NAS, SAN, solutions de sauvegarde automatisées",
+"Supervision et monitoring : Zabbix, Centreon, Grafana",
+"réception et de service de la clientèle",
+"intervention sur site",
+"diagnostics des pannes",
+"Réception des matériels",
+"Mise en service des copieurs et imprimantes",
+"Vérification des garanties",
+"Connaissance de son parc SAV en attente de réparation",
+"Rangement des pièces détachées, consommables et matériels",
+"gestion de bases de données",
+"l'optimisation de systèmes informatiques",
+"python",
+"architecture micro-front / micro-services",
+"front étant développé en Vue 3 ",
+"partie back en Java",
+"accompagner les utilisateurs en les conseillant, les formant et en leur offrant une assistance sur mesure",
+"assembler et intégrer du matériel informatique, garantissant un fonctionnement optimal",
+"diagnostiquer à distance les dysfonctionnements matériels et logiciels, trouvant toujours la solution idéale",
+"installation normalisée des terminaux de point de vente (OS, antivirus, logiciels de caisse.)",
+"gestion du parc client, que ce soit sur site, par télémaintenance ou téléassistance",
+"Développement WEB back-end en ASP.NET CORE ",
+"front-end en Vue.JS (TypeScript)",
+"Contribuer à l'amélioration continue des processus de développement",
+"Assurer la maintenance et l'amélioration continue des applications existantes",
+"Garantir la qualité du code via l'utilisation de bonnes pratiques (revues de code, intégration continue)",
+"intervenir sur des projets liés au Cloud AZURE (Sharepoint)",
+"Environnement technique :Frontend : TypeScript, Vue.JS 3",
+"Backend : .NET 8",
+"CI/CD : Gitlab",
+"Déploiement de charts Helm dans un environnement KubernetesMacOSDocker",
+"Assurer le bon fonctionnement des systèmes d'information ",
+"Assurer le bon fonctionnement des systèmes d'information",
+"Effectuer des mises à jour et des améliorations techniques",
+"Collaborer avec les autres membres de l'équipe informatique pour résoudre les problèmes complexes",
+"Gérer les incidents et les requêtes de support technique ",
+" Participer à l'élaboration et à la mise en œuvre de projets informatiques",
+"Assurer la sécurité des systèmes et des données",
+"connaissances sur les tendances et les progrès en matière de matériel, d'outils et de sécurité",
+"aborder les problématiques de front et trouver des solutions adaptées et performantes",
+"prendre en charge tous les aspects de configuration et de maintenance des systèmes informatiques de nos clients",
+"Appliquer les règles de sécurité informatique et les consignes d'exploitation",
+"Expertise du fonctionnement des systèmes d'exploitation Windows et Linux, des réseaux et des systèmes de messageries",
+"Maitrise des divers logiciels de sauvegarde",
+"environnement Microsoft (Windows Server, Microsoft 365, Active Directory)",
+"virtualisation (VMware, Hyper-V)",
+"sauvegardes (Veeam, NAS)",
+"réseau (wi-fi, switch)",
+"sécurité (firewall, VPN)",
+"Assurer l’administration (exploitation, sauvegarde, maintenance, etc..) et le suivi opérationnel des outils de sécurité BACKOFFICE (Antivirus, Firewall, Tina, Lina, etc..) et le suivi des d’incidents (Helpdesk).",
+"Assurer la supervision, l’administration, la maintenance, et le support des réseaux et équipements d‘infrastructures (Reseaux électriques, Climatisation, onduleurs, etc…) localisés plus particulièrement dans nos locaux techniques réservés à l‘informatique (salle informatique, locaux techniques hébergeant les baies de brassage et d‘interconnexions , etc…)",
+"Assurer la supervision, l’administration, la maintenance, et le support utilisateurs du réseau informatique (Serveurs, PC, Switchs, Routeurs, Firewall, NAS, etc",
+"Assurer le support utilisateur de second niveau",
+"Traiter un incident dans un centre de services et assurer le suivi du parc (GPLI)",
+"Assister les utilisateurs en environnement bureautique ou sur leurs équipements numériques (Téléphones, Ordinateurs, Tablettes, ect",
+"* Intégrer des bases de données et des APIs ;",
+"* Tester et déboguer des applications pour garantir leur bon fonctionnement ;",
+"* Maintenir et mettre à jour des applications existantes ;",
+"Installer et configurer un service réseau",
+"Connaissance générale des concepts de base et des techniques d’architecture des systèmes et réseaux",
+"maîtrise du multithreading, de la gestion mémoire, et des performances temps réel",
+"Maitrise parfaite de son environnement (utilisateurs, clients, matériel, logiciels",
+"DHCP, DNS, stratégies, etc.)"];
+
+
+
+       for (y=0;y<xx.length;y++){
+          checkmyskill.innerHTML +="<h2>"+aa[xx[y]]+" :</h2>";
+       for (i=0;i<myskill.length;i++){
+       checkmyskill.innerHTML+="<input type=\"checkbox\" name=\""+xx[y]+"\" value=\""+myskill[i]+"\"> "+myskill[i]+"<br>";
+       }
+       }
+
+    };
+      var checkboxes3 = document.querySelectorAll('input[name="experienceentreprise"]');
+      const experienceentreprise = Array.from(checkboxes3).map(cb => cb.value+" à travers/ au sein de… (Tu mets l’expérience ou l’entreprise liée à tes compétences sur "+cb.value+")");
+      var checkboxes2 = document.querySelectorAll('input[name="experience"]');
+
+      const experience = Array.from(checkboxes2).map(cb => cb.value);
+      var checkboxes1 = document.querySelectorAll('input[name="missions"]');
+      const missions = Array.from(checkboxes1).map(cb => cb.value);
+      const checkboxes = document.querySelectorAll('input[name="skills"]');
+      const skills = Array.from(checkboxes).map(cb => cb.value); 
+let itemskills = skills.sort(() => 0.5 - Math.random()).slice(0,2);
+     sampleskills.innerHTML=itemskills.join(", ");
+let itemmissions = missions.sort(() => 0.5 - Math.random()).slice(0,2);
+     samplemissions.innerHTML=itemmissions.join(", ");
+let itemexperience = experience.sort(() => 0.5 - Math.random()).slice(0,2);
+     sampleexperience.innerHTML=itemexperience.join(", ");
+let itementreprise = experienceentreprise.sort(() => 0.5 - Math.random()).slice(0,2);
+     sampleentreprisename.innerHTML=itementreprise.join(", ");
+     sampleentreprisename1.innerHTML=itementreprise.join(", ");
+
+
+};

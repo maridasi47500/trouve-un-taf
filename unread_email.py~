@@ -35,8 +35,19 @@ def get_email_body(message):
         body.append(payload.decode(charset, errors='replace'))  
     return '\n'.join(body)  
 
-
 app = Flask(__name__)
+
+@app.route("/postuler/job")
+def postulerjob():
+    job={}
+    for az in ["city", "company", "title", "content"]:
+        try:
+            job[az]=request.args.get(az)
+        except:
+            print("erreur "+az)
+    return render_template("postulerjob.html", job=job)
+
+
 @app.route("/")
 def index():
     try:
@@ -53,13 +64,31 @@ def index():
     username=os.getenv("MYEMAIL")
     mail.login(username, os.getenv("MYPASS"))
     mail.select("inbox")
+    senders_list= ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com","recommandation@emails.hellowork.com"]
     
     #status, ids = mail.search(None, "UNSEEN")
-    status, ids = mail.search(None, "SEEN")
-    ids = ids[0].split()[-(lastemail):] if ids[0] else []
+    #status, ids = mail.search(None, "SEEN")
+    #status, ids = mail.search(None, "SEEN FROM \""+senders_list.join("\" OR FROM \"")+"\" AND UNSEEN FROM \""+senders_list.join("\" OR FROM \"")+"\"")
+    query="(OR "
+    paspremier=False
+    for s in senders_list:
+        if paspremier:
+            query+=" "
+        query+="(FROM \""
+        
+        query+=s
+        query+="\")"
+        paspremier=True
+    query+=")"
+    query="(OR (SEEN) (UNSEEN))"
+    print(query)
+    status, ids = mail.search(None, query)
+    
+    ids = ids[0].split()[-(lastemail + 1):] if ids[0] else []
     ids.reverse()
     emails=[] 
     joboffers=[]
+    quiarepondu=[]
     sites=["indeed", "linkedin", "welcometothejungle", "hellowork", "apec", "cadremploi", "meteojob", "jobleads", "jobijoba", "jooble"] 
     for eid in ids:
         status, data = mail.fetch(eid, "(RFC822)")
@@ -79,7 +108,7 @@ def index():
             resultemail="haha@email.com"
         print("result email", resultemail)
 
-        if resultemail in ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com"]:
+        if resultemail in senders_list:
             myhash={"body": body, "myjobofferurl": "joboffers", "from": msg["From"], "subject": subject, "date": msg["Date"]}
             for w in sites:
                 if w in msg["From"]:
@@ -94,16 +123,20 @@ def index():
             elif resultemail == "subscribe@fr.jooble.org":
                 for zz in ScanJobOffers().scanjooble(myhash):
                     joboffers.append(zz)
+            elif resultemail == "recommandation@emails.hellowork.com":
+                for zz in ScanJobOffers().scanhellowork(myhash):
+                    joboffers.append(zz)
     
 
     for x in emails:
         print(x["subject"])
     print(joboffers)
+    mail.logout()
     return render_template("index.html", joboffers=joboffers, emails=emails, username=username,nbemails=lastemail)
 
         
     
-    mail.logout()
+
 if __name__ == "__main__":
     app.run()
     app.debug = True

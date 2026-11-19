@@ -37,6 +37,55 @@ import os
 class ScanJobOffers:
     def __init__(self):
         print("Welcome to my job search")
+    def scanhellowork(self, myhash):
+    
+        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "hellowork","salaire":""}
+        myscans=[]
+        soup = BeautifulSoup(myhash["body"], "html.parser")
+        secure_links = soup.select('a[href*="emails.hellowork.com/clic"][style*="font-size:18"]')
+        for x in secure_links:
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "hellowork", "salaire":""}
+            try:
+                offer=x.parent.parent.parent
+                mylink=BeautifulSoup(str(x), "html.parser")
+                title=mylink.get_text()
+                info=offer.select("tr td")
+                myinfo=offer.select("tr td a")
+                company=info[1].get_text()
+                print("my title", title)
+                print("my company", company)
+
+                #print("contrat", info[3].get_text())
+                #print("hybrid", info[4].get_text())
+                #print("description", info[5].get_text())
+                myscan["title"]= title
+                myscan["company"]= company
+                if len(myinfo) > 1:
+                    for aa in myinfo[2:]:
+                        text=aa.get_text().lower()
+                        print("my info hello work", text)
+
+                        textok=aa.get_text()
+                        numbers = re.findall(r'-?\d*\.?\d+', text)
+                        place=re.findall(r'^[a-zéèà ]*.[-].\d+$', text)
+                        if "€" in text and len(numbers) > 0:
+                            myscan["salaire"]= textok
+                        elif len(place) > 0:
+                            myscan["city"]= place[0]
+                        elif "cdd" in text or "cdi" in text or "indépendant" in text or "stage" in text or "interim" in text or "intérim" in text:
+                            myscan["contrat"]= textok
+                        elif "sur place" in text or "télétravail" in text or "teletravail" in text or "hybrid" in text or "presentiel" in text or "présentiel" in text:
+                            myscan["hybrid"]= textok
+
+                myscans.append(myscan)
+            except Exception as e:
+                print("error HELLO WORK", e)
+                 
+        
+        
+        print(myscans)
+        return myscans
+    
     def scanjobijoba(self, myhash):
     
         myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobijoba","salaire":""}
@@ -139,6 +188,87 @@ class ScanJobOffers:
         myscans=[]
         soup = BeautifulSoup(myhash["body"], "html.parser")
         secure_links = soup.select('a[href*="jooble.org/redir/jdp"]')
+        vacancy_secure_links = soup.select('[id*=vacancy-description]')
+        away_secure_links = soup.select('a[href*="jooble.org/away"]')
+        #print("awaylinks", away_secure_links)
+
+
+
+        wyz=0
+        for x in vacancy_secure_links:
+
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jooble","salaire":""}
+            try:
+    
+
+                title=x.select("h2 strong")
+                myscan["title"]= title[0].get_text()
+                try:
+                    myscan["salaire"]= title[1].get_text()
+
+                except:
+                    myscan["salaire"]= ""
+                #print("title", title)
+                company=x.select("td p strong")
+                print("company", company)
+                company=x.select("p strong")
+                print("company", company)
+                myscan["company"]= company[0].get_text()
+                city=x.select("td p[id*=region]")
+                print("city", city)
+                myscan["city"]= city[0].get_text()
+                contrat=x.select("span img")
+                myscan["contrat"]= ""
+                paspremier=False
+                for u in contrat:
+                    if paspremier == True:
+                        myscan["contrat"]+= " "
+                    myscan["contrat"]+= u.parent.get_text()
+                    paspremier=True
+                print(myscan)
+
+                myscans.append(myscan)
+                wyz+=1
+            except Exception as e:
+                print("error joonle away", e)
+                wyz+=1
+        print("===========JOOBLEEE==============")
+        for x in away_secure_links:
+
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jooble","salaire":""}
+            try:
+    
+                #mydata=BeautifulSoup(str(x), "html.parser")
+                title=x.select("h2 strong")
+                company=x.select("td p strong")
+                city=x.select("td p span")
+                #tags=x.select("td p .tag")
+                #if len(tags) == 0:
+                #    process(x)
+
+
+                #print("title", title)
+                myscan["title"]= title[0].get_text()
+
+                #print(company)
+                myscan["company"]= company[0].get_text()
+
+                print(myscan)
+                
+                #print(city)
+                myscan["city"]= city[1].get_text()
+
+
+                try:
+                    myscan["salaire"]= title[1].get_text()
+
+                except:
+                    myscan["salaire"]= ""
+                myscans.append(myscan)
+                wyz+=1
+            except Exception as e:
+                print("error joonle away", e)
+                wyz+=1
         print("===========JOOBLEEE==============")
         for x in secure_links:
             myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jooble","salaire":""}

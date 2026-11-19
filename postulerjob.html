@@ -1,0 +1,399 @@
+
+  <h2>Formulaire de Candidature au job <%=job["name"]%> </h2>
+<div id="madescriptionjob" hidden><%=job["description"]%></div>
+  <form id="formulaire">
+    <label>Nom du poste :</label><br>
+    <input type="text" id="poste" value="<%=job["name"]%>"><br><br>
+    <label>Nom du domaine :</label><br>
+    <input type="text" value="informatique" placeholder="informatique, développement web, technicien réseaux" id="domaine"><br><br>
+    <label>Nom de l'entreprise :</label><br>
+    <input type="text" id="entreprise" onchange="sampleentreprisename.innerHTML=this.value;return false;"><br><br>
+
+    <label>Ajouter une compétence :</label><br>
+    <input type="text" id="newSkill"><br><br>
+    <label>Ajouter une compétence que j'ai pas : <b style="color:green;">remplir ici ecrit 1 ou 2 lettres de plus</b></label><br>
+    <input type="text" id="donthaveSkill"><br><br>
+<div id="samplelettre">
+<h2>mon example de lettre</h2>
+Actuellement à la recherche d’une nouvelle opportunité professionnelle, je souhaite soumettre ma candidature pour le poste de <span id="sampleposte"><%=job["name"]%></span> au sein de <span id="sampleentreprisename"></span>.
+
+Fort de quelques années d'expérience dans le domaine de <span id="sampledomaine">l'informatique</span>, et titulaire de plusieurs diplômes dans ce domaine, je suis convaincue de pouvoir contribuer efficacement à votre équipe.
+
+Au cours de mes expériences, j’ai eu l’opportunité d’assurer des <mark>missions</mark> telles que : <span id="samplemissions"></span>. J'ai des <mark>compétences</mark> en <span id="sampleskills"></span>. J'ai une <mark>expérience</mark> avec <span id="sampleexperience"></span>.
+
+Je suis enthousiaste à l'idée de mettre mes compétences au service de votre établissement et de contribuer à la continuité des services de <span id="sampleentreprisename1"></span>.
+
+
+</div>
+<div id="checksomeskill">
+</div>
+    <label>date de l'entretien :</label><br>
+    <input type="date" value="" id="dateentretien"><br><br>
+
+
+
+    <button type="button" onclick="genererLettre()">Générer la lettre</button>
+  </form>
+
+  <h3>Lettre générée :</h3>
+  <div id="lettre" style="white-space: pre-wrap; border:1px solid #ccc; padding:10px;"></div>
+  <div id="div1cv" style="white-space: pre-wrap; border:1px solid #ccc; padding:10px;"></div>
+<h1>creer un cv</h1>
+<form action="/createcv" method="post" id="formcv">
+         <div class="field">
+                                 <label for="cvcontent">contenu du mon cv</label>
+                                         <textarea name="content" id="cvcontent"></textarea>
+                                                         </div>
+        <div class="action">
+                <input type="submit" value="creer un cv" name="submit"/>
+        </div>
+</form>
+<h1>creer une lettre de motivation</h1>
+<form action="/createlettre" method="post" id="formlettre">
+         <div class="field">
+                                 <label for="lettrecontent">contenu de ma lettre de motivation</label>
+                                         <textarea name="content" id="lettrecontent"></textarea>
+                                                         </div>
+        <div class="action">
+                <input type="submit" value="creer une lettre de motivation" name="submit"/>
+        </div>
+</form>
+<h1>publier quelque chose</h1>
+<button onclick="poststh(); return false;" id="publierqch">publier</button>
+<div id="mespublications"></div>
+
+
+
+
+  <script>
+    function genererLettre() {
+      const domaine = document.getElementById('domaine').value;
+      const dateentretien = document.getElementById('dateentretien').value;
+      const monposte = document.getElementById('poste').value;
+      const entreprise = document.getElementById('entreprise').value;
+      const newSkill = document.getElementById('newSkill').value;
+      const donthaveSkill = document.getElementById('donthaveSkill').value;
+      var checkboxes8 = document.querySelectorAll('input[name="softskills"]:checked');
+
+      const mysoftskills = Array.from(checkboxes8).map(cb => cb.value);
+      var checkboxes7 = document.querySelectorAll('input[name="technologies"]:checked');
+
+      const technologies = Array.from(checkboxes7).map(cb => cb.value);
+      var checkboxes6 = document.querySelectorAll('input[name="schooling"]:checked');
+
+      const schooling = Array.from(checkboxes6).map(cb => cb.value);
+      var checkboxes5 = document.querySelectorAll('input[name="technicalskill"]:checked');
+
+      const technicalskill = Array.from(checkboxes5).map(cb => cb.value);
+      var checkboxes4 = document.querySelectorAll('input[name="skillilfautdevelopper"]:checked');
+
+      const skillilfautdevelopper = Array.from(checkboxes4).map(cb => cb.value);
+      var checkboxes3 = document.querySelectorAll('input[name="experienceentreprise"]:checked');
+
+      const experienceentreprise = Array.from(checkboxes3).map(cb => cb.value+" à travers/ au sein de… (Tu mets l’expérience ou l’entreprise liée à tes compétences sur "+cb.value+")");
+      var checkboxes2 = document.querySelectorAll('input[name="experience"]:checked');
+
+      const experience = Array.from(checkboxes2).map(cb => cb.value);
+      var checkboxes1 = document.querySelectorAll('input[name="missions"]:checked');
+
+      const missions = Array.from(checkboxes1).map(cb => cb.value);
+      const checkboxes = document.querySelectorAll('input[name="skills"]:checked');
+      const skills = Array.from(checkboxes).map(cb => cb.value);
+      if (newSkill) skills.push(newSkill);
+
+      const lettre = `Actuellement à la recherche d’une nouvelle opportunité professionnelle, je souhaite soumettre ma candidature pour le poste de ${monposte} au sein de ${entreprise}.
+
+Fort de quelques années d'expérience dans le domaine de ${domaine}, et titulaire de plusieurs diplômes dans ce domaine, je suis convaincue de pouvoir contribuer efficacement à votre équipe.
+
+Au cours de mes expériences, j’ai eu l’opportunité d’assurer des missions telles que : ${missions.join(', ')}. J'ai des compétences en ${skills.join(', ')}. J'ai une expérience avec ${experience.join(', ')}.
+
+Je suis enthousiaste à l'idée de mettre mes compétences au service de votre établissement et de contribuer à la continuité des services de ${entreprise}.
+
+Je suis convaincue que mon profil correspond parfaitement aux missions et attributions du poste et je serais honorée de pouvoir discuter plus en détail de ma candidature lors d'un entretien.
+
+Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées.
+
+Cordialement,
+
+`;
+      const lettre2 = ` Madame, Monsieur,
+
+ 
+
+Je suis vivement intéressée par le poste de ${monposte} au sein de ${entreprise}, dont l'excellence et les ambitions innovantes sont reconnues à travers le monde. Bien que je ne dispose pas de ${donthaveSkill} comme mentionné dans l'offre, je suis fermement convaincue que ma maîtrise de ${skills.join(', ')}, ainsi que ma grande motivation à apprendre et à contribuer, font de moi une candidate idéale.
+
+ 
+
+Durant mon parcours, j’ai développé de solides compétences en ${experienceentreprise.join(', ')}. J'ai également acquis une expérience pratique dans ${experience.join(', ')}, ce qui reflète ${mysoftskills.join(", ")}.
+Au cours de mes expériences, j’ai eu l’opportunité d’assurer des missions telles que : ${missions.join(', ')}. 
+ 
+
+Passionnée par les technologies, je vois dans ce poste une opportunité de mettre mes compétences au service de projets ambitieux et de continuer à développer mes connaissances. Je suis convaincue que ${mysoftskills.join(", ")} me permettront de contribuer efficacement au succès des missions de ${entreprise}.
+
+ 
+
+Je serais ravie de pouvoir discuter de mes motivations et de mes compétences lors d’un entretien. En vous remerciant pour l’attention portée à ma candidature, je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées. `;
+      const lettre3 = `
+Bonjour Madame/ Monsieur,
+ 
+Je tenais à vous remercier sincèrement pour le temps accordé au cours de notre entretien du ${dateentretien}  pour le poste de ${monposte}. J’ai particulièrement apprécié la richesse de nos échanges.
+ 
+Afin de poursuivre ma démarche d’amélioration, je souhaiterais obtenir de votre part un retour détaillé sur les points forts que vous avez identifiés chez moi, ainsi que les axes d’amélioration à travailler. Ces informations me seront précieuses pour perfectionner mes compétences et mieux répondre aux exigences du poste.
+ 
+Par ailleurs, je dispose d’une possibilité de réaliser un stage d’observation. Je serais ravie de pouvoir observer le métier de ${monposte} afin de mieux comprendre les pratiques professionnelles en vigueur et d'acquérir les connaissances nécessaires qui me permettront d’avoir une marge de progression substantielle. Ce stage serait à titre non rémunéré.
+ 
+Actuellement, mes compétences incluent ${skills.join(", ")}. J'aimerais également développer des compétences en ${skillilfautdevelopper.join(', ')}.
+ 
+Je suis convaincue que cette opportunité me permettra de contribuer activement à vos projets en apportant mon enthousiasme et ma capacité d’adaptation. Mon observation au sein de votre équipe serait l’occasion de partager des idées innovantes tout en apprenant auprès de professionnels expérimentés.
+ 
+Je vous remercie par avance pour la considération que vous porterez à ma requête et reste à votre disposition pour toute information complémentaire.
+ 
+Cordialement, `;
+      const lettre4 = `
+Bonjour Madame/ Monsieur,
+Madame, Monsieur,
+
+Je suis vivement intéressée par le poste de ${monposte} au sein du ${entreprise}. Bien que je ne dispose pas des expériences ${donthaveSkill} mentionnées dans l'offre, je suis fermement convaincue que ma maîtrise de ${skills.join(', ')}, ainsi que ma grande motivation à apprendre et à contribuer, font de moi une candidate idéale.
+
+ 
+
+Durant mon parcours, j’ai développé de solides compétences en ${experienceentreprise.join(', ')} au sein de plusieurs formations de ${monposte}. J'ai également acquis une expérience pratique dans ${experience.join(', ')}, ce qui reflète mon aptitude à résoudre des problèmes complexes et à m'adapter rapidement à de nouveaux environnements.Au cours de mes expériences, j’ai eu l’opportunité d’assurer des missions telles que : ${missions.join(', ')}. 
+
+
+ 
+
+Passionnée par les ${technologies.join(', ')}, je vois dans ce poste une opportunité de mettre mes compétences au service de projets ambitieux et de continuer à développer mes connaissances. Je suis convaincue que mon engagement et ma capacité à apprendre rapidement me permettront de contribuer efficacement au succès des missions de ${entreprise}.
+
+ 
+
+Je serais ravie de pouvoir discuter de mes motivations et de mes compétences lors d’un entretien. En vous remerciant pour l’attention portée à ma candidature, je vous prie d’agréer, Madame, Monsieur, l’expression de mes salutations distinguées. »
+ 
+Cordialement, `;
+const lettre5=`<h2>mail de remerciement</h2>
+
+ 
+
+Bonjour,
+
+ 
+
+Je tenais à vous remercier sincèrement pour m’avoir reçu en entretien le 09/05/2025. Ce fut un réel plaisir d’échanger avec vous.
+
+ 
+
+Espérons qu’un jour, je rejoindrai votre équipe au sein de votre établissement.
+
+ 
+
+Encore merci pour l'entretien, je vous souhaite une agréable journée.
+
+ 
+
+Cordialement. `;
+<%alleducation=[{"name":"Torrens University Australia"}, {"name":"Obafemi Awolowo University"},{"name":"Police Secondary School Akure"}]%>
+<%allwork=[{"begin":"Nov2022", "end":"till date","name":"operation team member"}, {"begin":"2023","end":"february 2024","name":"professionnal freelancer"},{"begin":"january2024","end":"feb2025","name":"instructor"}]%>
+      var mycv=`
+<img src="" id="placephoto" style="height:200px;width:100%;display:none;" />
+<input type="file" id="inputplacephoto" onchange="previewSecondphoto()" />ajouter une image d'un endroit ici<br>
+<table class="cvjobtable" cellspacing="20px">
+    <tr>
+      <td>
+<input type="file" id="inputcvphoto" onchange="previewFile()">changer l'image ici<br>
+
+<img id="cvphoto" width="50%" height="200" alt="Image preview" src="<%=random.choice(["https://previews.123rf.com/images/vadymvdrobot/vadymvdrobot2012/vadymvdrobot201202544/161572608-attractive-beautiful-woman-blowing-party-whistle-and-wears-party-hat-for-celebrating-isolated-over.jpg","https://thumbs.dreamstime.com/b/fille-heureuse-d-afro-am%C3%A9ricain-de-m%C3%A9tis-30992502.jpg", "https://img.freepik.com/photos-gratuite/jeune-femme-afro-americaine-garde-levres-arrondies-pose-autour-ballons-gonfles-bleus-lors-evenement-festif_273609-45357.jpg?semt=ais_hybrid&w=740&q=80", "https://img.freepik.com/photos-gratuite/photo-femme-heureuse-souriante-tient-ballons-multicolores-tout-posant_273609-31819.jpg?t=st=1759496689~exp=1759500289~hmac=b705938b65778b0be8201d7ede6d46979292d6e70c287fe0bd95c1f3930e82e5", "https://img.freepik.com/photos-gratuite/il-est-temps-s-amuser-femme-afro-americaine-heureuse-suremotive-aime-fete-detient-ballons-helium-colores_273609-30049.jpg?semt=ais_hybrid&w=740&q=80", "https://img.freepik.com/photos-gratuite/femme-afro-americaine-positive-elegante-robe-rose-croise-doigts-anticipe-que-quelque-chose-desirable-se-produise-etant-fete-pose-contre-mur-bleu-ballons-gonfles_273609-39691.jpg?semt=ais_se_enriched&w=740&q=80", "https://img.freepik.com/photos-gratuite/souriante-heureuse-femme-afro-americaine-choisit-tenue-pour-fete-anniversaire-tient-chaussures-bleues-talons-hauts-pour-s-adapter-robe-regarde-cote-joyeusement-pose-pres-ballons-gonfles-volant-vetements-femme_273609-39915.jpg?semt=ais_hybrid&w=740&q=80", "https://st5.depositphotos.com/62628780/64707/i/450/depositphotos_647077830-stock-photo-balloon-happy-black-woman-studio.jpg", "https://st3.depositphotos.com/1265894/18033/i/1600/depositphotos_180339930-stock-photo-happy-birthday-woman-sky-rainbow.jpg", "https://img.freepik.com/photos-premium/belle-jeune-femme-maquillage-coiffure-tenant-ballons-helium-air-dans-sa-main-dans-studio-espace-copie-fond-bleu-concept-cirque-bonheur-idee-bal_175356-5522.jpg"])%>" /></td>
+      <td><h1 class="namecv">Anne Honyme</h1>
+      <p>
+        <em><span id="firstjobcv">Fullstack Web Developer</span> | Software Developer | Content Writer</em></a>
+      </p>
+      <p>
+        I am a self-motivated and passionate <span id="firstjobcv1">Fullstack Web Developer</span> with high level experience in HTML5, CSS3, Bootsrap4 and Javascript.
+      </p>
+    </td>
+    </tr>
+  </table>
+
+  <hr>
+  <h3>Education</h3>
+  <ul id="alleducation">
+
+<%=render_collection(collection=alleducation, partial='welcome/_cv1.html', as_='cv')%>
+  </ul>
+<hr>
+  <h3>Work Experience</h3>
+  <table class="cvjobtable" cellspacing="10px">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Work</th>
+      </tr>
+    </thead>
+<%=render_collection(collection=allwork, partial='welcome/_cv2.html', as_='cv')%>
+    <tbody id="allexperiences">
+      <tr>
+        <td>Nov2022-Till Date</td>
+        <td>Operations Team Member (Adecco)</td>
+      </tr>
+      <tr>
+        <td>Jan 2020</td>
+        <td>Professional Freelancern (Self Employed)</td>
+      </tr>
+      <tr>
+        <td>Apr 2021-May 2022</td>
+        <td>Instructor (National Youth Service Corp)</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>mes competences techniques</h3>
+  <table class="cvjobtable" cellspacing="10px">
+    <thead>
+      <tr>
+        <th>my skill name</th>
+        <th>content of my skill</th>
+      </tr>
+    </thead>
+    <tbody id="alltechnicalskill">
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h3>Licenses & Certification<br><em><strong>Pirple</strong></em></h3>
+  <ul>
+    <li>HTML5 AND CSS3</li>
+    <li>Issued Jul 2022. No Expiration Date</li>
+    <li>Credential ID sdflhjdqfkuh897nj</li>
+    <li><a href="https://www.pirple.com/certificates/sdflhjdqfkuh897nj">Show Credential</a></li>
+  </ul>
+
+<hr>
+
+  <h3>Skills</h3>
+      <table class="cvjobtable" cellspacing="10px">
+          <tr>
+            <td>Web Developer</td>
+            <td>HTML | CSS | Bootstrap |Javascript | Python | Vscode | Atom | Jsbin</td>
+          </tr>
+          <tr>
+            <td>Content Writing</td>
+            <td>Web copy | Academic writing | SEO Writing</td>
+          </tr>
+          <tr>
+            <td>Other Skills</td>
+            <td>Microsoft word | Microsoft Excel | Powerpoint Presentation | Outlook</td>
+            <td id="otherskillslist"></td>
+          </tr>
+      </table>
+
+  <hr />
+  <H3>Contact Me</H3>
+  <ul>
+    <li><a href="">Twitter</a></li>
+    <li><a href="annehonyme.medium.com">Medium</a></li>
+    <li><a href="www.linkedin.com/in/annehonyme">Linkedin</a></li>
+    <li><a href="anne.honyme20@gmail.com">Gmail</a></li>
+  </ul>`;
+
+
+      document.getElementById('lettre').innerHTML = lettre;
+      if (donthaveSkill.length > 0){
+      document.getElementById('lettre').innerHTML += "<h3>Lettre de motivation avec une grande entreprise</h3>";
+      document.getElementById('lettre').innerHTML += lettre2;
+      document.getElementById('lettre').innerHTML += "<h3>Lettre de motivation si je n'ai pas toutes les competences avec une grande entreprise</h3>";
+      document.getElementById('lettre').innerHTML += lettre4;
+      document.getElementById('lettre').innerHTML += lettre5;
+      }
+      if (dateentretien !== null && skillilfautdevelopper.length > 0){
+      document.getElementById('lettre').innerHTML += "<h3>Lettre de motivation après l'entretien</h3>";
+      document.getElementById('lettre').innerHTML += lettre3;
+
+      }
+      document.getElementById('div1cv').innerHTML = "<h3>mon cv</h3>";
+      document.getElementById('div1cv').innerHTML += mycv;
+      for (var h=0;h<experience.length;h++){
+         allexperiences.innerHTML+=`      <tr>
+        <td><textarea class="mycvtextarea">Nov2022-Till Date</textarea></td>
+        <td><textarea class="mycvtextarea">${poste.innerHTML}, ${experience[h]}, my company</textarea></td>
+      </tr>
+        `;
+      }
+      for (h=0;h<technicalskill.length;h++){
+         alltechnicalskill.innerHTML+=`      <tr>
+        <td><textarea class="mycvtextarea">competence technique (reseau)</textarea></td>
+        <td><textarea class="mycvtextarea">${technicalskill[h]}</textarea></td>
+      </tr>
+        `;
+      }
+      for (h=0;h<schooling.length;h++){
+         alleducation.innerHTML+=`
+        <li><textarea class="mycvtextarea">${schooling[h]}</textarea></li>
+        `;
+      }
+      otherskillslist.innerHTML=skills.join(", ");
+      firstjobcv.innerHTML="<textarea class=\"mycvtextarea\">"+poste.value+"</textarea>";
+      firstjobcv1.innerHTML="<textarea class=\"mycvtextarea\">"+poste.value+"</textarea>";
+      cvcontent.value=div1cv.innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+      lettrecontent.value=document.getElementById("lettre").innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+      $(".mycvtextarea").each(function(){
+          $(this)[0].onkeyup = function(){
+              this.innerHTML=this.value;
+              console.log(div1cv.innerHTML);
+              cvcontent.value=div1cv.innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+              lettrecontent.value=document.getElementById("lettre").innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+          }
+          $(this)[0].onchange = function(){
+              this.innerHTML=this.value;
+              console.log(div1cv.innerHTML);
+              cvcontent.value=div1cv.innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+              lettrecontent.value=document.getElementById("lettre").innerHTML.replaceAll("<textarea class=\"mycvtextarea\">","").replaceAll("</textarea>","");
+          }
+      });
+    }
+
+function previewSecondphoto() {
+  var preview = document.querySelector('img#placephoto');
+  var file    = document.querySelector('input[type=file]#inputplacephoto').files[0];
+  preview.style.display="block";
+  var reader  = new FileReader();
+
+  reader.onloadend = function () {
+    preview.src = reader.result;
+  }
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+  }
+}
+function poststh(){
+var hey=$(document.querySelectorAll("#alleducation li")).toArray();
+var hi=$(document.querySelectorAll("#cvjobtable tr")).toArray();
+var ho=hi.concat(hey);
+const random = Math.floor(Math.random() * ho.length);
+mespublications.innerHTML+="<div><span><img src=\""+cvphoto.src+"\" class=\"avatar\"/>"+document.querySelector("h1.namecv").innerHTML+"</span>";
+mespublications.innerHTML+="<p>cette étape dans mon cv fait un certain temps : "+ho[random].innerText+" . je voulais juste publier quelquechose</p>";
+mespublications.innerHTML+="</div>";
+
+}
+
+function previewFile() {
+  var preview = document.querySelector('img#cvphoto');
+  var file    = document.querySelector('input[type=file]#inputcvphoto').files[0];
+  var reader  = new FileReader();
+
+  reader.onloadend = function () {
+    preview.src = reader.result;
+  }
+
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    preview.src = "";
+  }
+}
+
+
+
+  </script>
+
+
