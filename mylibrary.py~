@@ -96,6 +96,8 @@ class ScanJobOffers:
             try:
                 title=x.get_text()
                 myscan["title"]= title
+                if "Afficher l’offre d’emploi" in title:
+                    process(x)
                 tout=x.parent.parent.parent.parent
                 tout1=tout.parent.parent.parent.parent
                 print("mytitle", (title))
@@ -104,31 +106,32 @@ class ScanJobOffers:
                 myscan["company"]= company
                 for xx in tout.select('td'):
                     wow= xx.get_text()
-                    hey=re.findall(r'\w+.|.(Sur place|Télétravail|hybride)', wow)
-                    salaire=re.findall(r'EUR [0-9.k-]* | (Plein temps|Temps partiel)', wow)
+                    hey=re.findall(r'(\w+).[|].(Sur place|Télétravail|hybride)', wow)
+                    salaire=re.findall(r'([EURk0-9\\h-]*).[|].(Plein temps|Temps partiel)', wow)
                     if len(hey) > 0:
-                        print("how are you")
-                        ville=hey[0].split("|")[0].strip()
-                        hybride=hey[0].split("|")[1].strip()
+                        print("how are you ville / hybride / presentiel / distanciel", hey)
+                        ville=hey[0][0].strip()
+                        hybride=hey[0][1].strip()
                         myscan["city"]= ville
                         myscan["hybride"]= hybride
                     if len(salaire) > 0:
-                        monsalaire=salaire[0].split("|")[0].strip()
-                        contrat=salaire[0].split("|")[1].strip()
-                        print("how are you")
+                        print("how are you salaire / contrat plein temps temps partial", salaire)
+                        monsalaire=salaire[0][0].strip()
+                        contrat=salaire[0][1].strip()
+
                         myscan["salaire"]= monsalaire
                         myscan["contrat"]= contrat
-                infocompany=tout1.select("[bgcolor='#E8F2FF']").get_text()
+                infocompany=tout1.select("[bgcolor='#E8F2FF']")[0].get_text()
                 company+=" "+infocompany
                 myscan["company"]= company
                 try:
-                    infooffer=tout1.select("[bgcolor='#F1FFA1']").get_text()
+                    infooffer=tout1.select("[bgcolor='#F1FFA1']")[0].get_text()
                     myscan["content"]= infooffer
                 except:
                     print("error")
                 myscans.append(myscan)
             except Exception as e:
-                print("error", e)
+                print("error Jobs leads", e)
                  
         
         
