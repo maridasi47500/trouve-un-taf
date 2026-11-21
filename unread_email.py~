@@ -45,7 +45,7 @@ def postulerjob():
             job[az]=request.args.get(az)
         except:
             print("erreur "+az)
-    return render_template("postulerjob.html", job=job)
+    return render_template("postulerjob.html", job=job, random=random)
 
 
 @app.route("/")
@@ -64,7 +64,7 @@ def index():
     username=os.getenv("MYEMAIL")
     mail.login(username, os.getenv("MYPASS"))
     mail.select("inbox")
-    senders_list= ["contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com","recommandation@emails.hellowork.com"]
+    senders_list= ["mailer@jobleads.com", "contact@jobijoba.com", "donotreply@jobalert.indeed.com", "career-interests-noreply@linkedin.com", "info@cadremploi.fr", "ne-pas-repondre@meteojob.com","subscribe@fr.jooble.org", "emploi@emails.hellowork.com", "no-reply@indeed.com","recommandation@emails.hellowork.com"]
     
     #status, ids = mail.search(None, "UNSEEN")
     #status, ids = mail.search(None, "SEEN")
@@ -116,6 +116,9 @@ def index():
             emails.append(myhash)
             if resultemail == "contact@jobijoba.com":
                 for zz in ScanJobOffers().scanjobijoba(myhash):
+                    joboffers.append(zz)
+            elif resultemail == "ne-pas-repondre@meteojob.com":
+                for zz in ScanJobOffers().scanmeteojob(myhash):
                     joboffers.append(zz)
             elif resultemail == "ne-pas-repondre@meteojob.com":
                 for zz in ScanJobOffers().scanmeteojob(myhash):

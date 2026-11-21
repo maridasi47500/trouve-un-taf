@@ -85,6 +85,55 @@ class ScanJobOffers:
         
         print(myscans)
         return myscans
+    def scanjobleads(self, myhash):
+    
+        myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobleads","salaire":""}
+        myscans=[]
+        soup = BeautifulSoup(myhash["body"], "html.parser")
+        secure_links = soup.select('a[href*="jobleads.com/fr/job"]')
+        for x in secure_links:
+            myscan={"title": "", "content":"", "company":"", "city":"", "jobofferurl": "jobleads", "salaire":""}
+            try:
+                title=x.get_text()
+                myscan["title"]= title
+                tout=x.parent.parent.parent.parent
+                tout1=tout.parent.parent.parent.parent
+                print("mytitle", (title))
+                company= tout.select('td')[2].get_text()
+                print("company", company)
+                myscan["company"]= company
+                for xx in tout.select('td'):
+                    wow= xx.get_text()
+                    hey=re.findall(r'\w+.|.(Sur place|Télétravail|hybride)', wow)
+                    salaire=re.findall(r'EUR [0-9.k-]* | (Plein temps|Temps partiel)', wow)
+                    if len(hey) > 0:
+                        print("how are you")
+                        ville=hey[0].split("|")[0].strip()
+                        hybride=hey[0].split("|")[1].strip()
+                        myscan["city"]= ville
+                        myscan["hybride"]= hybride
+                    if len(salaire) > 0:
+                        monsalaire=salaire[0].split("|")[0].strip()
+                        contrat=salaire[0].split("|")[1].strip()
+                        print("how are you")
+                        myscan["salaire"]= monsalaire
+                        myscan["contrat"]= contrat
+                infocompany=tout1.select("[bgcolor='#E8F2FF']").get_text()
+                company+=" "+infocompany
+                myscan["company"]= company
+                try:
+                    infooffer=tout1.select("[bgcolor='#F1FFA1']").get_text()
+                    myscan["content"]= infooffer
+                except:
+                    print("error")
+                myscans.append(myscan)
+            except Exception as e:
+                print("error", e)
+                 
+        
+        
+        print(myscans)
+        return myscans
     
     def scanjobijoba(self, myhash):
     
@@ -216,7 +265,7 @@ class ScanJobOffers:
                 myscan["company"]= company[0].get_text()
                 city=x.select("td p[id*=region]")
                 print("city", city)
-                myscan["city"]= city[1].get_text()
+                myscan["city"]= city[0].get_text()
                 contrat=x.select("span img")
                 myscan["contrat"]= ""
                 paspremier=False
